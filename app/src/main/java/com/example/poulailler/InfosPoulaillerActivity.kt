@@ -21,13 +21,12 @@ class InfosPoulaillerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.infos_poulailler)
-        // Vérifiez que Firebase est initialisé
+        // Vérifie que Firebase est initialisé
         if (!FirebaseApp.getApps(this).isEmpty()) {
             dbRef = FirebaseDatabase.getInstance().getReference("Poules")
 
             // Initialisez le RecyclerView
             recyclerView = findViewById<RecyclerView>(R.id.recicleViewPoulailler)
-            // Configurez le gestionnaire de disposition (par exemple, LinearLayoutManager)
             recyclerView.layoutManager = LinearLayoutManager(this)
             pouleAdapter = PouleAdapter(poulesList)
             recyclerView.adapter = pouleAdapter
@@ -41,7 +40,7 @@ class InfosPoulaillerActivity : AppCompatActivity() {
                         val poule = childSnapshot.getValue(Poule::class.java)
                         poule?.let { poulesList.add(it) }
                     }
-                    pouleAdapter.notifyDataSetChanged() // Mettez à jour l'adaptateur
+                    pouleAdapter.notifyDataSetChanged()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -51,23 +50,4 @@ class InfosPoulaillerActivity : AppCompatActivity() {
         }
     }
 }
-
-
-
-
-/*                // dataSnapshot contient les données récupérées de la base de données
-                for (childSnapshot in dataSnapshot.children) {
-                    // childSnapshot contient les données de chaque poule
-                    val poule = childSnapshot.getValue(Poule::class.java)
-                }
-
-                val adapter =
-                    PouleAdapter(poulesList) // PouleAdapter est votre adaptateur personnalisé
-                recyclerView.adapter = adapter
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // En cas d'erreur
-            }
-        })*/
 

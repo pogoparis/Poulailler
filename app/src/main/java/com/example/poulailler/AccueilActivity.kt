@@ -19,14 +19,13 @@ private lateinit var creerPouleButton   : Button
         infoPoulaillerButton = findViewById(R.id.infoPoulailler)
         infoPoulaillerButton.setOnClickListener {
             val intent = Intent(this, InfosPoulaillerActivity::class.java)
-            startActivity(intent) // Démarrez la nouvelle activité
+            startActivity(intent)
         }
 
         creerPouleButton = findViewById(R.id.creerPoule)
-        // Définir un OnClickListener pour le bouton "Créer Poule"
         creerPouleButton.setOnClickListener {
             val intent = Intent(this, CreationPouleActivity::class.java)
-            startActivity(intent) // Démarrez la nouvelle activité ou fragment.
+            startActivity(intent)
 
 
         }
