@@ -17,6 +17,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 import java.io.ByteArrayOutputStream
 import java.util.Date
 
@@ -24,6 +25,7 @@ class CreationPouleFragment : Fragment() {
 
     private lateinit var dbRef: DatabaseReference
     private lateinit var rootView: View
+    private var isEditMode = false
 
     companion object {
         private const val REQUEST_IMAGE_CAPTURE = 1
@@ -36,10 +38,34 @@ class CreationPouleFragment : Fragment() {
     ): View? {
         rootView = inflater.inflate(R.layout.fragment_creation_poule, container, false)
 
+        val boutonCreerPoule = rootView.findViewById<Button>(R.id.buttonCreer)
         val etPouleNom = rootView.findViewById<EditText>(R.id.editTextNom)
+        val etPouleRace = rootView.findViewById<EditText>(R.id.editTextRace)
         val etPoulePoids = rootView.findViewById<EditText>(R.id.editTextPoids)
         val etPouleCaract = rootView.findViewById<EditText>(R.id.editTextCaract)
-        val etPouleRace = rootView.findViewById<EditText>(R.id.editTextRace)
+
+        val bundle = arguments
+        if (bundle != null) {
+            isEditMode = true
+
+            val pouleName = bundle.getString("nom", "")
+            val pouleRace = bundle.getString("race", "")
+            val poulePoids = bundle.getString("poids", "")
+            val pouleCaract = bundle.getString("caract", "")
+            val imageUrl = bundle.getString("imageUrl", "")
+            etPouleNom.setText(pouleName)
+            etPouleRace.setText(pouleRace)
+            etPoulePoids.setText(poulePoids)
+            etPouleCaract.setText(pouleCaract)
+
+            // Si une URL d'image existe, chargez l'image dans votre ImageView
+            if (!imageUrl.isNullOrEmpty()) {
+                val imagePoule = rootView.findViewById<ImageView>(R.id.imagePoule)
+                Picasso.get().load(imageUrl).into(imagePoule)
+            }
+            boutonCreerPoule.text = "Sauvegarder"
+        }
+
         val takePhotoButton = rootView.findViewById<Button>(R.id.buttonTakePhoto)
         val chooseImageButton = rootView.findViewById<Button>(R.id.buttonChoosePhoto)
 
@@ -60,7 +86,6 @@ class CreationPouleFragment : Fragment() {
             }
         }
 
-        val boutonCreerPoule = rootView.findViewById<Button>(R.id.buttonCreer)
         boutonCreerPoule.setOnClickListener {
 
             val pouleName = etPouleNom.text.toString()
@@ -89,20 +114,48 @@ class CreationPouleFragment : Fragment() {
 
             if (isValid) {
                 dbRef = FirebaseDatabase.getInstance().getReference("Poules")
-                val pouleId = dbRef.push().key!!
-                val poule =
-                    Poule(pouleId, pouleName, pouleRace, poulePoids, pouleCaract, imageUrl = "")
-                dbRef.child(pouleId).setValue(poule)
-                    .addOnCompleteListener {
-                        Toast.makeText(context, "Poule insérée avec succès", Toast.LENGTH_LONG)
-                            .show()
-                        etPouleNom.text.clear()
-                        etPouleCaract.text.clear()
-                        etPoulePoids.text.clear()
-                        etPouleRace.text.clear()
-                    }.addOnFailureListener { err ->
-                        Toast.makeText(context, "Erreur  ${err.message}", Toast.LENGTH_LONG).show()
+
+                if (isEditMode) {
+                    // Mode modification : Mettre à jour la poule existante
+                    val pouleId =
+                        bundle?.getString("pouleId") // Obtenez l'ID de la poule à partir des arguments
+                    if (pouleId != null) {
+                        val poule = Poule(
+                            pouleId,
+                            pouleName,
+                            pouleRace,
+                            poulePoids,
+                            pouleCaract,
+                            imageUrl = ""
+                        )
+                        dbRef.child(pouleId).setValue(poule)
+                            .addOnCompleteListener {
+                                Toast.makeText(context, "Poule mise à jour avec succès", Toast.LENGTH_LONG
+                                ).show()
+                                fragmentManager?.popBackStack()
+                            }
+                            .addOnFailureListener { err ->
+                                Toast.makeText(context, "Erreur : ${err.message}", Toast.LENGTH_LONG
+                                ).show()
+                            }
                     }
+                } else {
+                    val pouleId = dbRef.push().key!!
+                    val poule =
+                        Poule(pouleId, pouleName, pouleRace, poulePoids, pouleCaract, imageUrl = "")
+                    dbRef.child(pouleId).setValue(poule)
+                        .addOnCompleteListener {
+                            Toast.makeText(context, "Poule insérée avec succès", Toast.LENGTH_LONG)
+                                .show()
+                            etPouleNom.text.clear()
+                            etPouleCaract.text.clear()
+                            etPoulePoids.text.clear()
+                            etPouleRace.text.clear()
+                        }.addOnFailureListener { err ->
+                            Toast.makeText(context, "Erreur  ${err.message}", Toast.LENGTH_LONG)
+                                .show()
+                        }
+                }
             }
         }
         return rootView
@@ -120,11 +173,15 @@ class CreationPouleFragment : Fragment() {
                     updateImagePreview(imageBitmap)
                     saveImageToFirebaseStorage(imageBitmap)
                 }
+
                 REQUEST_SELECT_IMAGE -> {
                     // Gérer le résultat de la sélection d'image depuis la galerie
                     val imageUri = data?.data
                     if (imageUri != null) {
-                        val imageBitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
+                        val imageBitmap = MediaStore.Images.Media.getBitmap(
+                            requireContext().contentResolver,
+                            imageUri
+                        )
                         updateImagePreview(imageBitmap)
                         saveImageToFirebaseStorage(imageBitmap)
                     }

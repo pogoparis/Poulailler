@@ -40,6 +40,7 @@ android {
 
 
 dependencies {
+    implementation ("com.squareup.picasso:picasso:2.71828")
     implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
     implementation ("androidx.room:room-runtime:2.5.2")
     implementation("com.google.firebase:firebase-database-ktx:20.2.2")

@@ -40,11 +40,37 @@ class InfosPoulaillerFragment : Fragment() {
             dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     poulesList.clear()
-                    for (childSnapshot in dataSnapshot.children) {
-                        val poule = childSnapshot.getValue(Poule::class.java)
-                        poule?.let { poulesList.add(it) }
+                    if (dataSnapshot.exists()) {
+                        for (childSnapshot in dataSnapshot.children) {
+                            val poule = childSnapshot.getValue(Poule::class.java)
+                            poule?.let { poulesList.add(it) }
+                        }
+                        val mAdapter = PouleAdapter(poulesList)
+                        recyclerView.adapter = mAdapter
+
+                        mAdapter.SetOnItemClickListener(object : PouleAdapter.OnItemClickListener {
+                            override fun onItemClick(position: Int) {
+                                val selectedPoule = poulesList[position] // Obtenez la poule sélectionnée
+                                val bundle = Bundle()
+                                bundle.putString("nom", selectedPoule.nom)
+                                bundle.putString("race", selectedPoule.race)
+                                bundle.putString("poids", selectedPoule.poids)
+                                bundle.putString("caract", selectedPoule.caract)
+                                bundle.putString("imageUrl", selectedPoule.imageUrl)
+
+                                val fragment = CreationPouleFragment()
+                                fragment.arguments = bundle
+
+                                val fragmentManager = requireActivity().supportFragmentManager
+                                val fragmentTransaction = fragmentManager.beginTransaction()
+                                fragmentTransaction.replace(R.id.fragmentContainer, fragment)
+                                fragmentTransaction.addToBackStack(null)
+                                fragmentTransaction.commit()
+                            }
+                        })
+
+                        pouleAdapter.notifyDataSetChanged()
                     }
-                    pouleAdapter.notifyDataSetChanged()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
