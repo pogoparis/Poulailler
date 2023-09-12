@@ -5,6 +5,6 @@ data class Poule(
     val nom: String = "",
     val race: String = "",
     val poids: String = "",
-    val caract: String? = ""
-   // val imageUrl: String? = null
+    val caract: String? = "",
+    val imageUrl: String? = null
 )
