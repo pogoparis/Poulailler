@@ -29,7 +29,7 @@
         android:layout_marginEnd="20dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Nom"
+        android:hint="Nom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/creerPouleTitre" />
@@ -43,7 +43,7 @@
         android:layout_marginEnd="20dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Race"
+        android:hint="Race"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextNom" />
@@ -57,7 +57,7 @@
         android:layout_marginEnd="20dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Poids"
+        android:hint="Poids"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextRace" />
@@ -71,7 +71,7 @@
         android:layout_marginEnd="20dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Caractéristique (Optionnel)"
+        android:hint="Caractéristique (Optionnel)"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPoids" />
