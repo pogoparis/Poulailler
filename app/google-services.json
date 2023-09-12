@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "937870777785",
+    "project_id": "poulailler-4af33",
+    "storage_bucket": "poulailler-4af33.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937870777785:android:b9b8fc117bd8384488ea68",
+        "android_client_info": {
+          "package_name": "com.example.poulailler"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCozT_a-V6dgi7XkBDNUJrPigccah7wyUc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
