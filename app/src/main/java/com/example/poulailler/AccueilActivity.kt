@@ -1,33 +1,51 @@
 package com.example.poulailler
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.FirebaseApp
 
 class AccueilActivity : AppCompatActivity() {
 
-private lateinit var infoPoulaillerButton   : Button
-private lateinit var creerPouleButton   : Button
+    private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var fragmentManager: FragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
-        setContentView(R.layout.accueil)
+        setContentView(R.layout.activity_base)
 
-        infoPoulaillerButton = findViewById(R.id.infoPoulailler)
-        infoPoulaillerButton.setOnClickListener {
-            val intent = Intent(this, InfosPoulaillerActivity::class.java)
-            startActivity(intent)
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
+        fragmentManager = supportFragmentManager
+
+        // Chargez le fragment AccueilFragment par défaut
+        val defaultFragment = AccueilFragment()
+        replaceFragment(defaultFragment)
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_accueil -> {
+                    val accueilFragment = AccueilFragment()
+                    replaceFragment(accueilFragment)
+                    true
+                }
+
+                R.id.navigation_retour -> {
+                    onBackPressed()
+                    true
+                }
+                // Ajoutez d'autres cas pour gérer d'autres éléments de menu ici
+                else -> false
+            }
         }
+    }
 
-        creerPouleButton = findViewById(R.id.creerPoule)
-        creerPouleButton.setOnClickListener {
-            val intent = Intent(this, CreationPouleActivity::class.java)
-            startActivity(intent)
-
-
-        }
+    // Fonction pour remplacer le fragment actuellement affiché
+    private fun replaceFragment(fragment: Fragment) {
+        fragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
     }
 }

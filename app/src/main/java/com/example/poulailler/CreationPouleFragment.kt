@@ -1,38 +1,42 @@
 package com.example.poulailler
 
-import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 
-class CreationPouleActivity : AppCompatActivity() {
+class CreationPouleFragment : Fragment() {
 
     private lateinit var dbRef: DatabaseReference
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.creation_poule)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val rootView = inflater.inflate(R.layout.fragment_creation_poule, container, false)
 
-        val etPouleNom = findViewById<EditText>(R.id.editTextNom)
-        val etPoulePoids = findViewById<EditText>(R.id.editTextPoids)
-        val etPouleCaract = findViewById<EditText>(R.id.editTextCaract)
-        val etPouleRace = findViewById<EditText>(R.id.editTextRace)
-        val etPouleImage = findViewById<ImageView>(R.id.imagePoule)
+        val etPouleNom = rootView.findViewById<EditText>(R.id.editTextNom)
+        val etPoulePoids = rootView.findViewById<EditText>(R.id.editTextPoids)
+        val etPouleCaract = rootView.findViewById<EditText>(R.id.editTextCaract)
+        val etPouleRace = rootView.findViewById<EditText>(R.id.editTextRace)
+        val etPouleImage = rootView.findViewById<ImageView>(R.id.imagePoule)
 
         etPouleImage.setImageResource(R.drawable.poule1)
-        val boutonCreerPoule = findViewById<Button>(R.id.buttonCreer)
+        val boutonCreerPoule = rootView.findViewById<Button>(R.id.buttonCreer)
         boutonCreerPoule.setOnClickListener {
 
             val pouleName = etPouleNom.text.toString()
             val pouleRace = etPouleRace.text.toString()
             val poulePoids = etPoulePoids.text.toString()
             val pouleCaract = etPouleCaract.text.toString()
-            //       val pouleImg = etPouleImage.getImageResource(R.drawable.poule)
+            // val pouleImg = etPouleImage.getImageResource(R.drawable.poule)
 
             var isValid = true
 
@@ -59,16 +63,17 @@ class CreationPouleActivity : AppCompatActivity() {
                 val poule = Poule(pouleId, pouleName, pouleRace, poulePoids, pouleCaract)
                 dbRef.child(pouleId).setValue(poule)
                     .addOnCompleteListener {
-                        Toast.makeText(this, "Poule insérée avec succès", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Poule insérée avec succès", Toast.LENGTH_LONG).show()
                         etPouleNom.text.clear()
                         etPouleCaract.text.clear()
                         etPoulePoids.text.clear()
                         etPouleRace.text.clear()
-
                     }.addOnFailureListener { err ->
-                        Toast.makeText(this, "Erreur  ${err.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Erreur  ${err.message}", Toast.LENGTH_LONG).show()
                     }
             }
         }
+
+        return rootView
     }
 }
