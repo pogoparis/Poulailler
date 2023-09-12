@@ -32,10 +32,13 @@ class PouleAdapter(
     override fun onBindViewHolder(holder: PouleAdapter.PouleViewHolder, position: Int) {
         val currentPoule = poules[position]
         holder.nomTextView.text = currentPoule.nom
+        holder.raceTextView.text = currentPoule.race
     }
 
     inner class PouleViewHolder(itemView: View, clickListener: OnItemClickListener) : RecyclerView.ViewHolder(itemView) {
         val nomTextView: TextView = itemView.findViewById(R.id.nomTextView)
+        val raceTextView: TextView = itemView.findViewById(R.id.raceTextView)
+
         init {
             itemView.setOnClickListener{
                 clickListener.onItemClick(adapterPosition)

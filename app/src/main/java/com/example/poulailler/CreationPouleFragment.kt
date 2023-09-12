@@ -47,7 +47,6 @@ class CreationPouleFragment : Fragment() {
         val bundle = arguments
         if (bundle != null) {
             isEditMode = true
-
             val pouleName = bundle.getString("nom", "")
             val pouleRace = bundle.getString("race", "")
             val poulePoids = bundle.getString("poids", "")
