@@ -31,7 +31,6 @@ class AccueilActivity : AppCompatActivity() {
                     replaceFragment(accueilFragment)
                     true
                 }
-
                 R.id.navigation_retour -> {
                     onBackPressed()
                     true
