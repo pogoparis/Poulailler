@@ -33,6 +33,7 @@ class PouleAdapter(
         val currentPoule = poules[position]
         holder.nomTextView.text = currentPoule.nom
         holder.raceTextView.text = currentPoule.race
+
     }
 
     inner class PouleViewHolder(itemView: View, clickListener: OnItemClickListener) : RecyclerView.ViewHolder(itemView) {
@@ -45,9 +46,4 @@ class PouleAdapter(
             }
         }
     }
-
-    inner class SetOnItemClickListener(any: Any) {
-
-    }
-
 }
