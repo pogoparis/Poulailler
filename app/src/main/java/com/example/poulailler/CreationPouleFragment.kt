@@ -27,9 +27,10 @@ class CreationPouleFragment : Fragment() {
     private lateinit var dbRef: DatabaseReference
     private lateinit var rootView: View
     private var isEditMode = false
-
+    private var imageUrlBeingEdited: String? = null
+    private var selectedImageBitmap: Bitmap? = null
     companion object {
-        private const val REQUEST_IMAGE_CAPTURE = 1
+   //     private const val REQUEST_IMAGE_CAPTURE = 1
         private const val REQUEST_SELECT_IMAGE = 2
     }
 
@@ -63,10 +64,11 @@ class CreationPouleFragment : Fragment() {
                 val imagePoule = rootView.findViewById<ImageView>(R.id.imagePoule)
                 Picasso.get().load(imageUrl).into(imagePoule)
             }
+            // et changer le bouton en sauvegarder pluto que creer
             boutonCreerPoule.text = "Sauvegarder"
         }
 
-        val takePhotoButton = rootView.findViewById<Button>(R.id.buttonTakePhoto)
+       /* val takePhotoButton = rootView.findViewById<Button>(R.id.buttonTakePhoto)*/
         val chooseImageButton = rootView.findViewById<Button>(R.id.buttonChoosePhoto)
 
         chooseImageButton.setOnClickListener {
@@ -76,7 +78,7 @@ class CreationPouleFragment : Fragment() {
             startActivityForResult(pickImageIntent, REQUEST_SELECT_IMAGE)
         }
 
-        takePhotoButton.setOnClickListener {
+/*        takePhotoButton.setOnClickListener {
             // Créer un intent pour l'appareil photo
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
@@ -84,7 +86,7 @@ class CreationPouleFragment : Fragment() {
             if (takePictureIntent.resolveActivity(requireActivity().packageManager) != null) {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
             }
-        }
+        }*/
 
         boutonCreerPoule.setOnClickListener {
             val pouleName = etPouleNom.text.toString()
@@ -106,13 +108,9 @@ class CreationPouleFragment : Fragment() {
                 etPoulePoids.error = "Veuillez, svp, entrer un poids approximatif"
                 isValid = false
             }
-            if (pouleName.isEmpty()) {
-                etPouleCaract.error = "Veuillez, svp, entrer un caractère"
-                isValid = false
-            }
 
             if (isValid) {
-                dbRef = FirebaseDatabase.getInstance().getReference("Poules")
+                dbRef = FirebaseDatabase.getInstance().getReference("poules")
 
                 if (isEditMode) {
                     // Mode modification : Mettre à jour la poule existante
@@ -126,13 +124,17 @@ class CreationPouleFragment : Fragment() {
                             pouleRace,
                             poulePoids,
                             pouleCaract,
-                            imageUrl = ""
+                            imageUrlBeingEdited ?: ""
                         )
                         dbRef.child(pouleId).setValue(poule)
                             .addOnCompleteListener {
                                 Toast.makeText(context, "Poule mise à jour avec succès", Toast.LENGTH_LONG
                                 ).show()
-                                //fragmentManager?.popBackStack()
+
+                                // Vérifiez si une image a été sélectionnée et envoyez-la en base de données
+                                if (selectedImageBitmap != null) {
+                                    saveImageToFirebaseStorage(selectedImageBitmap!!)
+                                }
                             }
                             .addOnFailureListener { err ->
                                 Toast.makeText(context, "Erreur : ${err.message}", Toast.LENGTH_LONG
@@ -142,7 +144,7 @@ class CreationPouleFragment : Fragment() {
                 } else {
                     val pouleId = dbRef.push().key!!
                     val poule =
-                        Poule(pouleId, pouleName, pouleRace, poulePoids, pouleCaract, imageUrl = "")
+                        Poule(pouleId, pouleName, pouleRace, poulePoids, pouleCaract, imageUrlBeingEdited ?: "")
                     dbRef.child(pouleId).setValue(poule)
                         .addOnCompleteListener {
                             Toast.makeText(context, "Poule insérée avec succès", Toast.LENGTH_LONG)
@@ -151,6 +153,12 @@ class CreationPouleFragment : Fragment() {
                             etPouleCaract.text.clear()
                             etPoulePoids.text.clear()
                             etPouleRace.text.clear()
+
+                            // Vérifiez si une image a été sélectionnée et envoyez-la en base de données
+                            if (selectedImageBitmap != null) {
+                                saveImageToFirebaseStorage(selectedImageBitmap!!)
+                            }
+
                         }.addOnFailureListener { err ->
                             Toast.makeText(context, "Erreur  ${err.message}", Toast.LENGTH_LONG)
                                 .show()
@@ -161,19 +169,11 @@ class CreationPouleFragment : Fragment() {
         return rootView
     }
 
-    // Gérer le résultat de la prise de photo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_IMAGE_CAPTURE -> {
-                    // Gérer le résultat de la capture d'image
-                    val imageBitmap = data?.extras?.get("data") as Bitmap
-                    updateImagePreview(imageBitmap)
-                    saveImageToFirebaseStorage(imageBitmap)
-                }
-
                 REQUEST_SELECT_IMAGE -> {
                     // Gérer le résultat de la sélection d'image depuis la galerie
                     val imageUri = data?.data
@@ -182,49 +182,48 @@ class CreationPouleFragment : Fragment() {
                             requireContext().contentResolver,
                             imageUri
                         )
+                        imageUrlBeingEdited = imageUri.toString() // Mettre à jour l'URL de l'image en cours de modification
                         updateImagePreview(imageBitmap)
-                        saveImageToFirebaseStorage(imageBitmap)
                     }
                 }
             }
         }
     }
 
-    private fun saveImageToFirebaseStorage(bitmap: Bitmap) {
-        val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference
-        val imagesRef =
-            storageRef.child("images") // Répertoire où vous souhaitez stocker les images
+   private fun saveImageToFirebaseStorage(bitmap: Bitmap) {
+       val storage = FirebaseStorage.getInstance()
+       val storageRef = storage.reference
+       val imagesRef = storageRef.child("images") // Répertoire où vous souhaitez stocker les images
 
-        // Générez un nom de fichier unique pour l'image (par exemple, un horodatage)
-        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val imageFileName = "poule_$timestamp.jpg"
+       // Générez un nom de fichier unique pour l'image (par exemple, un horodatage)
+       val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+       val imageFileName = "poule_$timestamp.jpg"
 
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val data = baos.toByteArray()
+       val baos = ByteArrayOutputStream()
+       bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+       val data = baos.toByteArray()
 
-        val imageRef = imagesRef.child(imageFileName)
+       val imageRef = imagesRef.child(imageFileName)
 
-        val uploadTask = imageRef.putBytes(data)
-        uploadTask.addOnSuccessListener { taskSnapshot ->
-            // L'image a été téléchargée avec succès
-            imageRef.downloadUrl.addOnCompleteListener { urlTask ->
-                if (urlTask.isSuccessful) {
-                    val downloadUrl = urlTask.result.toString()
-                    // Enregistrez l'URL de téléchargement dans la base de données Firebase
-                    updatePouleImageUrl(downloadUrl)
-                }
-            }
-        }.addOnFailureListener { exception ->
-            // Une erreur s'est produite lors du téléchargement de l'image
-            Toast.makeText(
-                context,
-                "Erreur de téléchargement de l'image : ${exception.message}",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
+       val uploadTask = imageRef.putBytes(data)
+       uploadTask.addOnSuccessListener { taskSnapshot ->
+           // L'image a été téléchargée avec succès
+           imageRef.downloadUrl.addOnCompleteListener { urlTask ->
+               if (urlTask.isSuccessful) {
+                   val downloadUrl = urlTask.result.toString()
+                   // Enregistrez l'URL de téléchargement dans la base de données Firebase
+                   updatePouleImageUrl(downloadUrl)
+               }
+           }
+       }.addOnFailureListener { exception ->
+           // Une erreur s'est produite lors du téléchargement de l'image
+           Toast.makeText(
+               context,
+               "Erreur de téléchargement de l'image : ${exception.message}",
+               Toast.LENGTH_LONG
+           ).show()
+       }
+   }
 
     private fun updateImagePreview(bitmap: Bitmap) {
         val imagePoule = rootView.findViewById<ImageView>(R.id.imagePoule)
@@ -242,18 +241,48 @@ class CreationPouleFragment : Fragment() {
         val poulePoids = etPoulePoids.text.toString()
         val pouleCaract = etPouleCaract.text.toString()
 
-        val pouleId = dbRef.push().key!!
-        val poule = Poule(pouleId, pouleName, pouleRace, poulePoids, pouleCaract, imageUrl)
-        dbRef.child(pouleId).setValue(poule)
-            .addOnCompleteListener {
-                Toast.makeText(context, "Poule insérée avec succès", Toast.LENGTH_LONG).show()
-                etPouleNom.text.clear()
-                etPouleCaract.text.clear()
-                etPoulePoids.text.clear()
-                etPouleRace.text.clear()
-            }.addOnFailureListener { err ->
-                Toast.makeText(context, "Erreur : ${err.message}", Toast.LENGTH_LONG).show()
+        val dbRef = FirebaseDatabase.getInstance().getReference("poules")
+
+        if (isEditMode) {
+            // Mode modification : Mettre à jour la poule existante
+            val pouleId = arguments?.getString("pouleId")
+            if (pouleId != null) {
+                val poule = Poule(
+                    pouleId,
+                    pouleName,
+                    pouleRace,
+                    poulePoids,
+                    pouleCaract,
+                    imageUrl
+                )
+                dbRef.child(pouleId).setValue(poule)
+                    .addOnCompleteListener {
+                        Toast.makeText(context, "Poule mise à jour avec succès", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    .addOnFailureListener { err ->
+                        Toast.makeText(context, "Erreur : ${err.message}", Toast.LENGTH_LONG)
+                            .show()
+                    }
             }
+        } else {
+            // Mode création : Créer une nouvelle poule
+            val pouleId = dbRef.push().key!!
+            val poule = Poule(pouleId, pouleName, pouleRace, poulePoids, pouleCaract, imageUrl)
+            dbRef.child(pouleId).setValue(poule)
+                .addOnCompleteListener {
+                    Toast.makeText(context, "Poule insérée avec succès", Toast.LENGTH_LONG)
+                        .show()
+                    etPouleNom.text.clear()
+                    etPouleCaract.text.clear()
+                    etPoulePoids.text.clear()
+                    etPouleRace.text.clear()
+                }
+                .addOnFailureListener { err ->
+                    Toast.makeText(context, "Erreur  ${err.message}", Toast.LENGTH_LONG)
+                        .show()
+                }
+        }
     }
 
 }

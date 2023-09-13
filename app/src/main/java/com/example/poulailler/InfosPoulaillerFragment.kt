@@ -29,10 +29,10 @@ class InfosPoulaillerFragment : Fragment() {
 
         // Vérifie que Firebase est initialisé
         if (!FirebaseApp.getApps(requireContext()).isEmpty()) {
-            dbRef = FirebaseDatabase.getInstance().getReference("Poules")
+            dbRef = FirebaseDatabase.getInstance().getReference("poules")
 
             // Initialisez le RecyclerView
-            recyclerView = rootView.findViewById<RecyclerView>(R.id.recicleViewPoulailler)
+            recyclerView = rootView.findViewById(R.id.recicleViewPoulailler)
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             pouleAdapter = PouleAdapter(poulesList)
             recyclerView.adapter = pouleAdapter
@@ -69,7 +69,6 @@ class InfosPoulaillerFragment : Fragment() {
                                 fragmentTransaction.commit()
                             }
                         })
-
                         pouleAdapter.notifyDataSetChanged()
                     }
                 }
