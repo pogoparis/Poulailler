@@ -10,19 +10,27 @@ import com.squareup.picasso.Picasso
 
 
 class PouleAdapter(
-    private val poules: List<Poule>)
-    : RecyclerView.Adapter<PouleAdapter.PouleViewHolder>() {
+    private val poules: List<Poule>,
+    private val onDeleteClickListener: OnDeleteClickListener
+) : RecyclerView.Adapter<PouleAdapter.PouleViewHolder>() {
 
     private lateinit var mListener: OnItemClickListener
-    interface OnItemClickListener{
+    interface OnItemClickListener {
         fun onItemClick(position: Int)
     }
 
-    fun SetOnItemClickListener(clickListener: OnItemClickListener){
+    interface OnDeleteClickListener {
+        fun onDeleteClick(position: Int)
+    }
+
+    fun SetOnItemClickListener(clickListener: OnItemClickListener) {
         mListener = clickListener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PouleAdapter.PouleViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): PouleAdapter.PouleViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.poule_item_layout, parent, false)
         return PouleViewHolder(itemView, mListener)
@@ -32,22 +40,32 @@ class PouleAdapter(
 
     override fun onBindViewHolder(holder: PouleAdapter.PouleViewHolder, position: Int) {
         val currentPoule = poules[position]
-     /*   holder.nomTextView.text = currentPoule.nom
-        holder.raceTextView.text = currentPoule.race*/
-holder.bind(currentPoule)
+        holder.bind(currentPoule)
+
     }
 
-    inner class PouleViewHolder(itemView: View, clickListener: OnItemClickListener) : RecyclerView.ViewHolder(itemView) {
+    inner class PouleViewHolder(itemView: View, clickListener: OnItemClickListener) :
+        RecyclerView.ViewHolder(itemView) {
         val nomTextView: TextView = itemView.findViewById(R.id.nomTextView)
         val raceTextView: TextView = itemView.findViewById(R.id.raceTextView)
-        // Référence à votre ImageView dans le layout de l'élément de RecyclerView
+        val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
+
         private val avatarImageView: ImageView = itemView.findViewById(R.id.avatarPouleList)
 
         init {
-            itemView.setOnClickListener{
+            itemView.setOnClickListener {
                 clickListener.onItemClick(adapterPosition)
             }
+            // Ajoutez un OnClickListener au bouton de suppression
+            deleteButton.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    // Appelez onDeleteClick de l'interface OnDeleteClickListener
+                    onDeleteClickListener.onDeleteClick(position)
+                }
+            }
         }
+
         fun bind(poule: Poule) {
             nomTextView.text = poule.nom
             raceTextView.text = poule.race

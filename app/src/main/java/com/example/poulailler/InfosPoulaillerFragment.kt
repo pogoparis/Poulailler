@@ -1,9 +1,12 @@
 package com.example.poulailler
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,7 +37,33 @@ class InfosPoulaillerFragment : Fragment() {
             // Initialisez le RecyclerView
             recyclerView = rootView.findViewById(R.id.recicleViewPoulailler)
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            pouleAdapter = PouleAdapter(poulesList)
+            pouleAdapter = PouleAdapter(poulesList, object : PouleAdapter.OnDeleteClickListener {
+                override fun onDeleteClick(position: Int) {
+                    val selectedPoule = poulesList[position] // Obtenez la poule sélectionnée
+
+                    // Supprimez la poule de la liste locale
+                    poulesList.removeAt(position)
+                    pouleAdapter.notifyItemRemoved(position)
+
+                    // Supprimez également la poule de la base de données Firebase
+                    val dbRef = FirebaseDatabase.getInstance().getReference("poules")
+                    dbRef.child(selectedPoule.id).removeValue()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(
+                                    context,
+                                    "La poule a été supprimée",
+                                    Toast.LENGTH_LONG
+                                )
+                                    .show()
+                            } else {
+                                Toast.makeText(context, "Suppression échouée", Toast.LENGTH_LONG)
+                                    .show()
+                            }
+                        }
+                }
+            })
+
             recyclerView.adapter = pouleAdapter
 
             dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -45,12 +74,45 @@ class InfosPoulaillerFragment : Fragment() {
                             val poule = childSnapshot.getValue(Poule::class.java)
                             poule?.let { poulesList.add(it) }
                         }
-                        val mAdapter = PouleAdapter(poulesList)
+                        val mAdapter =
+                            PouleAdapter(poulesList, object : PouleAdapter.OnDeleteClickListener {
+                                override fun onDeleteClick(position: Int) {
+                                    val selectedPoule =
+                                        poulesList[position] // Obtenez la poule sélectionnée
+
+                                    // Supprimez la poule de la liste locale
+                                    poulesList.removeAt(position)
+                                    pouleAdapter.notifyItemRemoved(position)
+
+                                    // Supprimez également la poule de la base de données Firebase
+                                    val dbRef =
+                                        FirebaseDatabase.getInstance().getReference("poules")
+                                    dbRef.child(selectedPoule.id).removeValue()
+                                        .addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                Toast.makeText(
+                                                    context,
+                                                    "La poule a été supprimée",
+                                                    Toast.LENGTH_LONG
+                                                )
+                                                    .show()
+                                            } else {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Suppression échouée",
+                                                    Toast.LENGTH_LONG
+                                                )
+                                                    .show()
+                                            }
+                                        }
+                                }
+                            })
                         recyclerView.adapter = mAdapter
 
                         mAdapter.SetOnItemClickListener(object : PouleAdapter.OnItemClickListener {
                             override fun onItemClick(position: Int) {
-                                val selectedPoule = poulesList[position] // Obtenez la poule sélectionnée
+                                val selectedPoule =
+                                    poulesList[position] // Obtenez la poule sélectionnée
                                 val bundle = Bundle()
                                 bundle.putString("pouleId", selectedPoule.id)
                                 bundle.putString("nom", selectedPoule.nom)
