@@ -1,13 +1,14 @@
 {
   "project_info": {
     "project_number": "937870777785",
+    "firebase_url": "https://poulailler-4af33-default-rtdb.firebaseio.com",
     "project_id": "poulailler-4af33",
     "storage_bucket": "poulailler-4af33.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:937870777785:android:b9b8fc117bd8384488ea68",
+        "mobilesdk_app_id": "1:937870777785:android:53876e50d9182c1888ea68",
         "android_client_info": {
           "package_name": "com.example.poulailler"
         }

@@ -52,6 +52,7 @@ class InfosPoulaillerFragment : Fragment() {
                             override fun onItemClick(position: Int) {
                                 val selectedPoule = poulesList[position] // Obtenez la poule sélectionnée
                                 val bundle = Bundle()
+                                bundle.putString("pouleId", selectedPoule.id)
                                 bundle.putString("nom", selectedPoule.nom)
                                 bundle.putString("race", selectedPoule.race)
                                 bundle.putString("poids", selectedPoule.poids)

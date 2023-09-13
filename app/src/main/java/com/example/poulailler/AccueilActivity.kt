@@ -31,11 +31,16 @@ class AccueilActivity : AppCompatActivity() {
                     replaceFragment(accueilFragment)
                     true
                 }
-                R.id.navigation_retour -> {
-                    onBackPressed()
+                R.id.navigation_infos -> {
+                    val infosPoulaillerFragment = InfosPoulaillerFragment()
+                    replaceFragment(infosPoulaillerFragment)
                     true
                 }
-                // Ajoutez d'autres cas pour gérer d'autres éléments de menu ici
+                R.id.navigation_creer -> {
+                    val creationPouleFragment = CreationPouleFragment()
+                    replaceFragment(creationPouleFragment)
+                    true
+                }
                 else -> false
             }
         }

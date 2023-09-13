@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,7 +87,6 @@ class CreationPouleFragment : Fragment() {
         }
 
         boutonCreerPoule.setOnClickListener {
-
             val pouleName = etPouleNom.text.toString()
             val pouleRace = etPouleRace.text.toString()
             val poulePoids = etPoulePoids.text.toString()
@@ -118,6 +118,7 @@ class CreationPouleFragment : Fragment() {
                     // Mode modification : Mettre à jour la poule existante
                     val pouleId =
                         bundle?.getString("pouleId") // Obtenez l'ID de la poule à partir des arguments
+                    Log.d("EditMode", "Poule ID: $pouleId")
                     if (pouleId != null) {
                         val poule = Poule(
                             pouleId,
@@ -131,7 +132,7 @@ class CreationPouleFragment : Fragment() {
                             .addOnCompleteListener {
                                 Toast.makeText(context, "Poule mise à jour avec succès", Toast.LENGTH_LONG
                                 ).show()
-                                fragmentManager?.popBackStack()
+                                //fragmentManager?.popBackStack()
                             }
                             .addOnFailureListener { err ->
                                 Toast.makeText(context, "Erreur : ${err.message}", Toast.LENGTH_LONG

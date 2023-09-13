@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item
-        android:id="@+id/navigation_retour"
-        android:icon="@drawable/ic_back"
-        android:title="Retour" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/navigation_accueil"
         android:icon="@drawable/ic_home"
         android:title="Accueil" />
+
+    <item
+        android:id="@+id/navigation_infos"
+        android:icon="@drawable/ic_info"
+        android:title="Mes Poules" />
+
+    <item
+        android:id="@+id/navigation_creer"
+        android:icon="@drawable/ic_poule"
+        android:title="Ajouter Poule" />
 
 </menu>
