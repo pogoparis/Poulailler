@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -41,6 +42,9 @@ class CreationPouleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         rootView = inflater.inflate(R.layout.fragment_creation_poule, container, false)
+        val goToWebButton = rootView.findViewById<Button>(R.id.lienCreerPoule)
+        val url = "https://meiker.io/play/13152/online.html"
+        val intentWeb = Intent(Intent.ACTION_VIEW, Uri.parse(url))
 
         val chooseImageButton = rootView.findViewById<Button>(R.id.buttonChooseImage)
         val boutonCreerPoule = rootView.findViewById<Button>(R.id.buttonCreer)
@@ -72,6 +76,10 @@ class CreationPouleFragment : Fragment() {
             }
             // et changer le bouton en sauvegarder pluto que creer
             boutonCreerPoule.text = "Sauvegarder"
+        }
+
+        goToWebButton.setOnClickListener {
+            startActivity(intentWeb)
         }
 
         chooseImageButton.setOnClickListener {
@@ -162,7 +170,6 @@ class CreationPouleFragment : Fragment() {
                         )
                     dbRef.child(pouleId).setValue(poule)
                         .addOnCompleteListener {
-
                             Toast.makeText(context, "Poule insérée avec succès", Toast.LENGTH_LONG)
                                 .show()
                             etPouleNom.text.clear()

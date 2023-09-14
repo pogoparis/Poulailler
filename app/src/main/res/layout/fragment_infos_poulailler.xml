@@ -11,26 +11,23 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recicleViewPoulailler"
-            android:layout_width="409dp"
-            android:layout_height="650dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginEnd="1dp"
-            android:layout_marginBottom="1dp"
+            android:layout_width="410dp"
+            android:layout_height="600dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            tools:layout_editor_absoluteX="1dp" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="409dp"
             android:layout_height="42dp"
+            android:layout_marginTop="80dp"
             android:text="Liste de vos Poules"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/recicleViewPoulailler"
+            app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="1dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

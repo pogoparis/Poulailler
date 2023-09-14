@@ -103,13 +103,13 @@
 
         <Button
             android:id="@+id/buttonChooseImage"
-            android:layout_width="254dp"
+            android:layout_width="180dp"
             android:layout_height="50dp"
-            android:layout_marginStart="80dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="80dp"
-            android:text="Choisir une image"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="2dp"
+            android:text="Choisir image"
+            app:layout_constraintEnd_toStartOf="@+id/lienCreerPoule"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imagePoule" />
 
@@ -124,6 +124,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/lienCreerPoule"
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="20dp"
+            android:text="Creer image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/buttonChooseImage"
+            app:layout_constraintTop_toBottomOf="@+id/imagePoule" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
