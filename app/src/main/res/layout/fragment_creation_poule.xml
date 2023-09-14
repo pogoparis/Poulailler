@@ -85,8 +85,8 @@
 
         <ImageView
             android:id="@+id/imagePoule"
-            android:layout_width="187dp"
-            android:layout_height="186dp"
+            android:layout_width="210dp"
+            android:layout_height="198dp"
             android:layout_marginStart="95dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="96dp"
@@ -98,12 +98,16 @@
             tools:srcCompat="@drawable/poule1" />
 
         <Button
-            android:id="@+id/buttonChoosePhoto"
-            android:layout_width="168dp"
+            android:id="@+id/buttonChooseImage"
+            android:layout_width="0dp"
             android:layout_height="41dp"
-            android:layout_marginStart="120dp"
-            android:layout_marginTop="7dp"
-            android:text="Choisir une photo"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="80dp"
+            android:layout_marginBottom="10dp"
+            android:text="Choisir une image"
+            app:layout_constraintBottom_toTopOf="@+id/buttonCreer"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imagePoule" />
 

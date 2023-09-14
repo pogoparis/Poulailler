@@ -1,16 +1,12 @@
 package com.example.poulailler
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
-import java.lang.Exception
+import com.bumptech.glide.Glide
 
 
 class PouleAdapter(
@@ -77,16 +73,10 @@ class PouleAdapter(
             // Charger et afficher l'image à partir de l'URL Firebase
             val imageUrl =poule.imageUrl
             if (imageUrl!!.isNotEmpty()) {
-                Picasso.get().load(imageUrl).into(avatarImageView, object : Callback {
-                    override fun onSuccess() {
-                        Log.d(TAG, "Chargement d'image réussi de ")
-                    }
+                Glide.with(itemView.context)
+                    .load(imageUrl)
+                    .into(avatarImageView)
 
-                    override fun onError(e: Exception?) {
-                        Log.e(TAG, "Erreur de chargement d'image $imageUrl : ${e?.message}")
-                    }
-
-                })
             } else {
                 avatarImageView.setImageResource(R.drawable.poule1)
             }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.icu.text.SimpleDateFormat
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -17,8 +18,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
-import com.squareup.picasso.Picasso
 import java.io.ByteArrayOutputStream
 import java.util.Date
 
@@ -41,7 +42,7 @@ class CreationPouleFragment : Fragment() {
     ): View? {
         rootView = inflater.inflate(R.layout.fragment_creation_poule, container, false)
 
-        val chooseImageButton = rootView.findViewById<Button>(R.id.buttonChoosePhoto)
+        val chooseImageButton = rootView.findViewById<Button>(R.id.buttonChooseImage)
         val boutonCreerPoule = rootView.findViewById<Button>(R.id.buttonCreer)
         val etPouleNom = rootView.findViewById<EditText>(R.id.editTextNom)
         val etPouleRace = rootView.findViewById<EditText>(R.id.editTextRace)
@@ -65,7 +66,9 @@ class CreationPouleFragment : Fragment() {
             if (imageUrl.isNotEmpty()){
                 Log.d("tag de log","ImageUrl : $imageUrl")
                 val imagePoule = rootView.findViewById<ImageView>(R.id.imagePoule)
-                Picasso.get().load(imageUrl).into(imagePoule)
+                Glide.with(this)
+                    .load(imageUrl)
+                    .into(imagePoule)
             }
             // et changer le bouton en sauvegarder pluto que creer
             boutonCreerPoule.text = "Sauvegarder"
@@ -99,6 +102,7 @@ class CreationPouleFragment : Fragment() {
             }
 
             if (isValid) {
+                jouerSon()
                 dbRef = FirebaseDatabase.getInstance().getReference("poules")
 
                 // ********************** Mode modification **************************
@@ -125,10 +129,10 @@ class CreationPouleFragment : Fragment() {
                                 pouleCaract,
                                 bundle.getString("imageUrl", "") ?: ""
                             )
-
                         }
                         dbRef.child(pouleId).setValue(poule)
                             .addOnCompleteListener {
+
                                 Toast.makeText(
                                     context, "Poule mise à jour avec succès", Toast.LENGTH_LONG
                                 ).show()
@@ -158,6 +162,7 @@ class CreationPouleFragment : Fragment() {
                         )
                     dbRef.child(pouleId).setValue(poule)
                         .addOnCompleteListener {
+
                             Toast.makeText(context, "Poule insérée avec succès", Toast.LENGTH_LONG)
                                 .show()
                             etPouleNom.text.clear()
@@ -180,6 +185,11 @@ class CreationPouleFragment : Fragment() {
             return rootView
         }
 
+
+    private fun jouerSon() {
+        val mainActivity = requireActivity() as AccueilActivity
+        mainActivity.playSaveSound()
+    }
 
 
     // Fonction pour remplacer le fragment actuellement affiché
