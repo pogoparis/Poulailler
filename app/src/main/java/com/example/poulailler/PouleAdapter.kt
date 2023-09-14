@@ -1,12 +1,16 @@
 package com.example.poulailler
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import java.lang.Exception
 
 
 class PouleAdapter(
@@ -71,8 +75,18 @@ class PouleAdapter(
             raceTextView.text = poule.race
 
             // Charger et afficher l'image à partir de l'URL Firebase
-            if (poule.imageUrl!!.isNotEmpty()) {
-                Picasso.get().load(poule.imageUrl).into(avatarImageView)
+            val imageUrl =poule.imageUrl
+            if (imageUrl!!.isNotEmpty()) {
+                Picasso.get().load(imageUrl).into(avatarImageView, object : Callback {
+                    override fun onSuccess() {
+                        Log.d(TAG, "Chargement d'image réussi de ")
+                    }
+
+                    override fun onError(e: Exception?) {
+                        Log.e(TAG, "Erreur de chargement d'image $imageUrl : ${e?.message}")
+                    }
+
+                })
             } else {
                 avatarImageView.setImageResource(R.drawable.poule1)
             }

@@ -37,6 +37,7 @@ class InfosPoulaillerFragment : Fragment() {
             // Initialisez le RecyclerView
             recyclerView = rootView.findViewById(R.id.recicleViewPoulailler)
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
             pouleAdapter = PouleAdapter(poulesList, object : PouleAdapter.OnDeleteClickListener {
                 override fun onDeleteClick(position: Int) {
                     val selectedPoule = poulesList[position] // Obtenez la poule sélectionnée

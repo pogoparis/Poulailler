@@ -62,7 +62,8 @@ class CreationPouleFragment : Fragment() {
             etPouleCaract.setText(pouleCaract)
 
             // Si une URL d'image existe, chargez l'image dans votre ImageView
-            if (!imageUrl.isNullOrEmpty()) {
+            if (imageUrl.isNotEmpty()){
+                Log.d("tag de log","ImageUrl : $imageUrl")
                 val imagePoule = rootView.findViewById<ImageView>(R.id.imagePoule)
                 Picasso.get().load(imageUrl).into(imagePoule)
             }
