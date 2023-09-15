@@ -1,5 +1,6 @@
 package com.example.poulailler
 
+import android.content.res.Configuration
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
