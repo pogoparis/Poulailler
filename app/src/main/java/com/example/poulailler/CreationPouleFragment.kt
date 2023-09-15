@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -20,6 +21,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 import java.util.Date
@@ -81,6 +83,11 @@ class CreationPouleFragment : Fragment() {
             boutonCreerPoule.text = "Sauvegarder"
         }
         //********************************** LISTENER *******************************
+
+        rootView.setOnClickListener {
+            hideKeyboard()
+        }
+
         goToWebButton.setOnClickListener {
             startActivity(intentWeb)
         }
@@ -251,6 +258,14 @@ class CreationPouleFragment : Fragment() {
     private fun updateImagePreview(bitmap: Bitmap) {
         val imagePoule = rootView.findViewById<ImageView>(R.id.imagePoule)
         imagePoule.setImageBitmap(bitmap)
+    }
+
+    private fun hideKeyboard() {
+        val inputMethodManager = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val currentFocusView = requireActivity().currentFocus
+        if (currentFocusView != null) {
+            inputMethodManager.hideSoftInputFromWindow(currentFocusView.windowToken, 0)
+        }
     }
 
 }
