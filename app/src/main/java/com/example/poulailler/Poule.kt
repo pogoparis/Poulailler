@@ -9,7 +9,7 @@ data class Poule(
     val race: String = "",
     val poids: String = "",
     val caract: String? = "",
-    val imageUrl: String? = null
+    var imageUrl: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,

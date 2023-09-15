@@ -1,5 +1,7 @@
 package com.example.poulailler
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,14 +73,20 @@ class PouleAdapter(
             raceTextView.text = poule.race
 
             // Charger et afficher l'image à partir de l'URL Firebase
-            val imageUrl =poule.imageUrl
-            if (imageUrl!!.isNotEmpty()) {
-                Glide.with(itemView.context)
-                    .load(imageUrl)
-                    .into(avatarImageView)
+            val imageUrl = poule.imageUrl
+            Log.d(TAG, "imageUrl de toutes les poules ${poule.imageUrl}")
 
-            } else {
-                avatarImageView.setImageResource(R.drawable.poule1)
+            try {
+                if (imageUrl != null) {
+                    Glide.with(itemView.context)
+                        .load(imageUrl)
+                        .into(avatarImageView)
+                } else {
+                    avatarImageView.setImageResource(R.drawable.poule1)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                avatarImageView.setImageResource(R.drawable.poule2)
             }
         }
     }
